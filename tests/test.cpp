@@ -17,12 +17,12 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#include <signal.hpp>
-#include <csignal.h>
-#include <iostream>
-#include <cstdio>
 #include <assert.h>
 #include <cmath>
+#include <csignal.h>
+#include <cstdio>
+#include <iostream>
+#include <signal.hpp>
 
 #define FLOAT_LENIENCY 0.00001
 
@@ -33,10 +33,10 @@ typedef struct point_s {
 using namespace std;
 
 template <class T>
-void test_param(const signal::parameters &in, const char *id, const T &def, const T &expect, bool expect2)
+void test_param(const signal::parameters& in, const char* id, const T& def, const T& expect, bool expect2)
 {
     bool ok = false;
-    const auto &val = in.get<T>(id, &ok, def);
+    const auto& val = in.get<T>(id, &ok, def);
     cout << "Start test with " << id << " for " << val << " against "
          << expect << " could retrieve: " << ok << ", expect: " << expect2 << endl;
 
@@ -45,16 +45,16 @@ void test_param(const signal::parameters &in, const char *id, const T &def, cons
 }
 
 template <class T>
-void test_paramf(const signal::parameters &in, const char *id, const T &def, const T &expect, bool expect2)
+void test_paramf(const signal::parameters& in, const char* id, const T& def, const T& expect, bool expect2)
 {
     bool ok = false;
-    const auto &val = in.get<T>(id, &ok, def);
+    const auto& val = in.get<T>(id, &ok, def);
     if (expect2)
         assert(fabs(static_cast<double>(val - expect)) < FLOAT_LENIENCY);
     assert(ok == expect2);
 }
 
-void cpp_signal1(const signal::parameters &in, signal::parameters *)
+void cpp_signal1(const signal::parameters& in, signal::parameters*)
 {
     cout << "== Triggered C++ signal 1" << endl;
 
@@ -72,7 +72,7 @@ void cpp_signal1(const signal::parameters &in, signal::parameters *)
     test_param<string>(in, "string2", string("doesn't exist"), string("doesn't exist"), false);
 }
 
-void cpp_signal1_2(const signal::parameters &, signal::parameters *out)
+void cpp_signal1_2(const signal::parameters&, signal::parameters* out)
 {
     cout << "== Triggered C++ signal 1 take 2" << endl;
     if (out) {
@@ -85,19 +85,19 @@ void cpp_signal1_2(const signal::parameters &, signal::parameters *out)
     }
 }
 
-void cpp_signal2(const signal::parameters &, signal::parameters *)
+void cpp_signal2(const signal::parameters&, signal::parameters*)
 {
     cout << "== Triggered C++ signal 2" << endl;
 }
 
-void register_cpp_signals(signal::manager &man)
+void register_cpp_signals(signal::manager& man)
 {
     assert(man.add("signal1", cpp_signal1));
     assert(man.add("signal1", cpp_signal1_2));
     assert(man.add("signal2", cpp_signal2));
 }
 
-void c_signal1(const signal_parameters_t *in, signal_parameters_t *)
+void c_signal1(const signal_parameters_t* in, signal_parameters_t*)
 {
     printf("== Triggered C signal 1\n");
     bool ok = false;
@@ -105,67 +105,67 @@ void c_signal1(const signal_parameters_t *in, signal_parameters_t *)
     int val = signal_parameters_get_int(in, "int", &ok);
     assert(val == -255 && ok);
 
-	signal_parameters_get_int(in, "int2", &ok);
-	assert(!ok);
+    signal_parameters_get_int(in, "int2", &ok);
+    assert(!ok);
 
-	unsigned int val2 = signal_parameters_get_uint(in, "uint", &ok);
-	assert(val2 == 255 && ok);
+    unsigned int val2 = signal_parameters_get_uint(in, "uint", &ok);
+    assert(val2 == 255 && ok);
 
-	signal_parameters_get_uint(in, "uint2", &ok);
-	assert(!ok);
+    signal_parameters_get_uint(in, "uint2", &ok);
+    assert(!ok);
 
-	float val3 = signal_parameters_get_float(in, "float", &ok);
-	assert(fabs(static_cast<double>(val3 - 3.14f)) < FLOAT_LENIENCY && ok);
+    float val3 = signal_parameters_get_float(in, "float", &ok);
+    assert(fabs(static_cast<double>(val3 - 3.14f)) < FLOAT_LENIENCY && ok);
 
-	signal_parameters_get_float(in, "float2", &ok);
-	assert(!ok);
+    signal_parameters_get_float(in, "float2", &ok);
+    assert(!ok);
 
-	double val4 = signal_parameters_get_double(in, "double", &ok);
-	assert(fabs(static_cast<double>(val4 - 3.141)) < FLOAT_LENIENCY && ok);
+    double val4 = signal_parameters_get_double(in, "double", &ok);
+    assert(fabs(static_cast<double>(val4 - 3.141)) < FLOAT_LENIENCY && ok);
 
-	bool val5 = signal_parameters_get_bool(in, "bool", &ok);
-	assert(val5 && ok);
+    bool val5 = signal_parameters_get_bool(in, "bool", &ok);
+    assert(val5 && ok);
 
-	signal_parameters_get_bool(in, "bool2", &ok);
-	assert(!ok);
+    signal_parameters_get_bool(in, "bool2", &ok);
+    assert(!ok);
 
-	const char *val6 = signal_parameters_get_string(in, "string", &ok);
-	assert(strcmp(val6, "string123") == 0 && ok);
+    const char* val6 = signal_parameters_get_string(in, "string", &ok);
+    assert(strcmp(val6, "string123") == 0 && ok);
 
-	signal_parameters_get_string(in, "string2", &ok);
-	assert(!ok);
+    signal_parameters_get_string(in, "string2", &ok);
+    assert(!ok);
 
-	const point_t *val7 = reinterpret_cast<const point_t *>(signal_parameters_get_data(in, "data", &ok));
-	assert(val7->x == 2 && val7->y == 3 && ok);
+    const point_t* val7 = reinterpret_cast<const point_t*>(signal_parameters_get_data(in, "data", &ok));
+    assert(val7->x == 2 && val7->y == 3 && ok);
 
-	signal_parameters_get_data(in, "data2", &ok);
-	assert(!ok);
+    signal_parameters_get_data(in, "data2", &ok);
+    assert(!ok);
 }
 
-void c_signal1_2(const signal_parameters_t *, signal_parameters_t *out)
+void c_signal1_2(const signal_parameters_t*, signal_parameters_t* out)
 {
-	printf("== Triggered C signal 1_2\n");
-	if (out) {
-		assert(signal_parameters_set_int(out, "int", -255));
-		assert(signal_parameters_set_uint(out, "uint", 255));
-		assert(signal_parameters_set_float(out, "float", 3.14f));
-		assert(signal_parameters_set_double(out, "double", 3.141));
-		assert(signal_parameters_set_bool(out, "bool", true));
-		assert(signal_parameters_set_string(out, "string", "string123"));
+    printf("== Triggered C signal 1_2\n");
+    if (out) {
+        assert(signal_parameters_set_int(out, "int", -255));
+        assert(signal_parameters_set_uint(out, "uint", 255));
+        assert(signal_parameters_set_float(out, "float", 3.14f));
+        assert(signal_parameters_set_double(out, "double", 3.141));
+        assert(signal_parameters_set_bool(out, "bool", true));
+        assert(signal_parameters_set_string(out, "string", "string123"));
 
-		point_t p;
-		p.x = 2;
-		p.y = 3;
-		assert(signal_parameters_set_data(out, "data", &p, sizeof(point_t)));
-	}
+        point_t p;
+        p.x = 2;
+        p.y = 3;
+        assert(signal_parameters_set_data(out, "data", &p, sizeof(point_t)));
+    }
 }
 
-void c_signal2(const signal_parameters_t *, signal_parameters_t *)
+void c_signal2(const signal_parameters_t*, signal_parameters_t*)
 {
-	printf("== Triggered C signal 2\n");
+    printf("== Triggered C signal 2\n");
 }
 
-void register_c_signals(signal_manager_t *man)
+void register_c_signals(signal_manager_t* man)
 {
     assert(signal_add(man, "signal1", c_signal1));
     assert(signal_add(man, "signal1_2", c_signal1_2));
@@ -204,29 +204,29 @@ int signal_cpp_test()
 
 int signal_c_test()
 {
-	printf("---- C Test ----\n");
+    printf("---- C Test ----\n");
 
-	signal_manager_t *m = signal_manager_create();
-	signal_parameters_t *in = signal_parameters_create();
-	signal_parameters_t *out = signal_parameters_create();
-	register_c_signals(m);
+    signal_manager_t* m = signal_manager_create();
+    signal_parameters_t* in = signal_parameters_create();
+    signal_parameters_t* out = signal_parameters_create();
+    register_c_signals(m);
 
-	printf("--- Setting up input paramters ---\n");
-	assert(signal_parameters_set_int(in, "int", -255));
-	assert(signal_parameters_set_uint(in, "uint", 255));
-	assert(signal_parameters_set_float(in, "float", 3.14f));
-	assert(signal_parameters_set_double(in, "double", 3.141));
-	assert(signal_parameters_set_bool(in, "bool", true));
-	assert(signal_parameters_set_string(in, "string", "string123"));
+    printf("--- Setting up input paramters ---\n");
+    assert(signal_parameters_set_int(in, "int", -255));
+    assert(signal_parameters_set_uint(in, "uint", 255));
+    assert(signal_parameters_set_float(in, "float", 3.14f));
+    assert(signal_parameters_set_double(in, "double", 3.141));
+    assert(signal_parameters_set_bool(in, "bool", true));
+    assert(signal_parameters_set_string(in, "string", "string123"));
 
-	point_t p;
-	p.x = 2;
-	p.y = 3;
-	assert(signal_parameters_set_data(in, "data", &p, sizeof(point_t)));
+    point_t p;
+    p.x = 2;
+    p.y = 3;
+    assert(signal_parameters_set_data(in, "data", &p, sizeof(point_t)));
 
-	printf("--- Firing signals ---\n");
-	assert(signal_send(m, "signal1", in, out));
-	assert(signal_send(m, "signal2", nullptr, nullptr));
+    printf("--- Firing signals ---\n");
+    assert(signal_send(m, "signal1", in, out));
+    assert(signal_send(m, "signal2", nullptr, nullptr));
 
     printf("--- Checking output paramters ---\n");
     bool ok = false;
@@ -238,14 +238,14 @@ int signal_c_test()
     assert(fabs(static_cast<double>(val3 - 3.14f)) < FLOAT_LENIENCY && ok);
     double val4 = signal_parameters_get_double(in, "double", &ok);
     assert(fabs(static_cast<double>(val4 - 3.141)) < FLOAT_LENIENCY && ok);
-    const char *val6 = signal_parameters_get_string(in, "string", &ok);
+    const char* val6 = signal_parameters_get_string(in, "string", &ok);
     assert(strcmp(val6, "string123") == 0 && ok);
-    const point_t *val7 = reinterpret_cast<const point_t *>(signal_parameters_get_data(in, "data", &ok));
+    const point_t* val7 = reinterpret_cast<const point_t*>(signal_parameters_get_data(in, "data", &ok));
     assert(val7->x == 2 && val7->y == 3 && ok);
 
-	printf("--- Freeing memory\n");
-	signal_parameters_free(in);
-	signal_parameters_free(out);
-	signal_manager_free(m);
-	return 0;
+    printf("--- Freeing memory\n");
+    signal_parameters_free(in);
+    signal_parameters_free(out);
+    signal_manager_free(m);
+    return 0;
 }

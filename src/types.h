@@ -18,8 +18,8 @@
  */
 
 #pragma once
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 #ifdef _WIN32
 #define DECLSPEC __declspec(dllexport)
@@ -32,5 +32,5 @@
 #else
 #define DECLSPEC
 #define C_SIGNAL_CALL
-#define FORCE_INLINE 
+#define FORCE_INLINE
 #endif
