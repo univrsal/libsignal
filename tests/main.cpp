@@ -22,8 +22,8 @@ extern int signal_c_test();
 
 int main()
 {
-	int err = 0;
-	err += signal_cpp_test();
-	err += signal_c_test();
-	return err;
+    int err = 0;
+    err += signal_cpp_test();
+    err += signal_c_test();
+    return err;
 }
