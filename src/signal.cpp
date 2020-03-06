@@ -22,171 +22,185 @@
 #include <string.h>
 
 typedef struct signal_manager_s {
-    signal::manager man;
+	signal::manager man;
 } signal_manager_t;
 
 typedef struct signal_parameters_s {
-    signal::parameters param;
+	signal::parameters param;
 } signal_parameters_t;
 
-signal_manager_t* signal_manager_create(void)
+signal_manager_t *signal_manager_create(void)
 {
-    auto* m = new signal_manager_t;
-    m->man = signal::manager();
-    return m;
+	auto *m = new signal_manager_t;
+	m->man = signal::manager();
+	return m;
 }
 
-void signal_manager_free(signal_manager_t* m)
+void signal_manager_free(signal_manager_t *m)
 {
-    delete m;
+	delete m;
 }
 
-signal_parameters_t* signal_parameters_create(void)
+signal_parameters_t *signal_parameters_create(void)
 {
-    auto* sp = new signal_parameters_t;
-    return sp;
+	auto *sp = new signal_parameters_t;
+	return sp;
 }
 
-void signal_parameters_free(signal_parameters_t* p)
+void signal_parameters_free(signal_parameters_t *p)
 {
-    delete p;
+	delete p;
 }
 
-bool signal_send(signal_manager_t* m, const char* id, const signal_parameters_t* param, signal_parameters_t* out)
+bool signal_send(signal_manager_t *m, const char *id,
+		 const signal_parameters_t *param, signal_parameters_t *out)
 {
-    if (!m || !id)
-        return false;
-    return m->man.send(id, param->param, &out->param);
+	if (!m || !id)
+		return false;
+	return m->man.send(id, param->param, &out->param);
 }
 
-bool signal_add(signal_manager_t* m, const char* id, signal_function_t fun)
+bool signal_add(signal_manager_t *m, const char *id, signal_function_t fun)
 {
-    if (!m || !fun || !id)
-        return false;
-    return m->man.add(id, reinterpret_cast<signal::signal_function>(fun));
+	if (!m || !fun || !id)
+		return false;
+	return m->man.add(id, reinterpret_cast<signal::signal_function>(fun));
 }
 
-bool signal_parameters_set_int(signal_parameters_t* p, const char* id, int val)
+bool signal_parameters_set_int(signal_parameters_t *p, const char *id, int val)
 {
-    if (!p || !id)
-        return false;
-    return p->param.add<int>(id, val);
+	if (!p || !id)
+		return false;
+	return p->param.add<int>(id, val);
 }
 
-bool signal_parameters_set_uint(signal_parameters_t* p, const char* id, unsigned int val)
+bool signal_parameters_set_uint(signal_parameters_t *p, const char *id,
+				unsigned int val)
 {
-    if (!p || !id)
-        return false;
-    return p->param.add<unsigned int>(id, val);
+	if (!p || !id)
+		return false;
+	return p->param.add<unsigned int>(id, val);
 }
 
-bool signal_parameters_set_bool(signal_parameters_t* p, const char* id, bool val)
+bool signal_parameters_set_bool(signal_parameters_t *p, const char *id,
+				bool val)
 {
-    if (!p || !id)
-        return false;
-    return p->param.add<bool>(id, val);
+	if (!p || !id)
+		return false;
+	return p->param.add<bool>(id, val);
 }
 
-bool signal_parameters_set_float(signal_parameters_t* p, const char* id, float val)
+bool signal_parameters_set_float(signal_parameters_t *p, const char *id,
+				 float val)
 {
-    if (!p || !id)
-        return false;
-    return p->param.add<float>(id, val);
+	if (!p || !id)
+		return false;
+	return p->param.add<float>(id, val);
 }
 
-bool signal_parameters_set_double(signal_parameters_t* p, const char* id, double val)
+bool signal_parameters_set_double(signal_parameters_t *p, const char *id,
+				  double val)
 {
-    if (!p || !id)
-        return false;
-    return p->param.add<double>(id, val);
+	if (!p || !id)
+		return false;
+	return p->param.add<double>(id, val);
 }
 
-bool signal_parameters_set_string(signal_parameters_t* p, const char* id, const char* val)
+bool signal_parameters_set_string(signal_parameters_t *p, const char *id,
+				  const char *val)
 {
-    if (!p || !id)
-        return false;
-    return p->param.add<std::string>(id, std::string(val));
+	if (!p || !id)
+		return false;
+	return p->param.add<std::string>(id, std::string(val));
 }
 
-bool signal_parameters_set_data(signal_parameters_t* p, const char* id, void* val, size_t size)
+bool signal_parameters_set_data(signal_parameters_t *p, const char *id,
+				void *val, size_t size)
 {
-    if (!p || !id || !val)
-        return false;
-    void* d = malloc(size);
-    memcpy(d, &val, size);
-    return p->param.add_direct(id, val, size);
+	if (!p || !id || !val)
+		return false;
+	void *d = malloc(size);
+	memcpy(d, &val, size);
+	return p->param.add_direct(id, val, size);
 }
 
-int signal_parameters_get_int(const signal_parameters_t* p, const char* id, bool* ok)
+int signal_parameters_get_int(const signal_parameters_t *p, const char *id,
+			      bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return 0;
-    }
-    return p->param.get<int>(id, ok);
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return 0;
+	}
+	return p->param.get<int>(id, ok);
 }
 
-unsigned int signal_parameters_get_uint(const signal_parameters_t* p, const char* id, bool* ok)
+unsigned int signal_parameters_get_uint(const signal_parameters_t *p,
+					const char *id, bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return 0;
-    }
-    return p->param.get<unsigned int>(id, ok);
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return 0;
+	}
+	return p->param.get<unsigned int>(id, ok);
 }
 
-bool signal_parameters_get_bool(const signal_parameters_t* p, const char* id, bool* ok)
+bool signal_parameters_get_bool(const signal_parameters_t *p, const char *id,
+				bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return 0;
-    }
-    return p->param.get<bool>(id, ok);
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return 0;
+	}
+	return p->param.get<bool>(id, ok);
 }
 
-float signal_parameters_get_float(const signal_parameters_t* p, const char* id, bool* ok)
+float signal_parameters_get_float(const signal_parameters_t *p, const char *id,
+				  bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return 0;
-    }
-    return p->param.get<float>(id, ok);
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return 0;
+	}
+	return p->param.get<float>(id, ok);
 }
 
-double signal_parameters_get_double(const signal_parameters_t* p, const char* id, bool* ok)
+double signal_parameters_get_double(const signal_parameters_t *p,
+				    const char *id, bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return 0;
-    }
-    return p->param.get<double>(id, ok);
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return 0;
+	}
+	return p->param.get<double>(id, ok);
 }
 
-const char* signal_parameters_get_string(const signal_parameters_t* p, const char* id, bool* ok)
+const char *signal_parameters_get_string(const signal_parameters_t *p,
+					 const char *id, bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return nullptr;
-    }
-    *ok = true;
-    auto* str = p->param.get_direct(id, ok);
-    if (str)
-        return reinterpret_cast<std::string*>(str)->c_str();
-    return nullptr;
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return nullptr;
+	}
+	*ok = true;
+	auto *str = p->param.get_direct(id, ok);
+	if (str)
+		return reinterpret_cast<std::string *>(str)->c_str();
+	return nullptr;
 }
 
-const void* signal_parameters_get_data(const signal_parameters_t* p, const char* id, bool* ok)
+const void *signal_parameters_get_data(const signal_parameters_t *p,
+				       const char *id, bool *ok)
 {
-    if (!p || !id) {
-        if (ok)
-            *ok = false;
-        return nullptr;
-    }
-    return p->param.get_direct(id, ok);
+	if (!p || !id) {
+		if (ok)
+			*ok = false;
+		return nullptr;
+	}
+	return p->param.get_direct(id, ok);
 }

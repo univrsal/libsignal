@@ -45,35 +45,38 @@ typedef struct signal_parameters_s signal_parameters_t;
  * \param repsonse	Output data for this signal (shared by all methods)
  * \defgroup signal++
  */
-typedef void (*signal_function_t)(const signal_parameters_t* params, signal_parameters_t* response);
+typedef void (*signal_function_t)(const signal_parameters_t *params,
+				  signal_parameters_t *response);
 
 /**
  * \brief Create a new signal manager, free with signal_manager_free
  * \return A new signal manager
  * \defgroup signal++
  */
-extern DECLSPEC signal_manager_t* C_SIGNAL_CALL signal_manager_create(void);
+extern DECLSPEC signal_manager_t *C_SIGNAL_CALL signal_manager_create(void);
 
 /**
  * \brief Frees a signal manager created with signal_manager_create
  * \param m the signal manager to free
  * \defgroup signal++
  */
-extern DECLSPEC void C_SIGNAL_CALL signal_manager_free(signal_manager_t* m);
+extern DECLSPEC void C_SIGNAL_CALL signal_manager_free(signal_manager_t *m);
 
 /**
  * \brief Create new signal parameters, free with signal_parameters_free
  * \return New signal parameters
  * \defgroup signal++
  */
-extern DECLSPEC signal_parameters_t* C_SIGNAL_CALL signal_parameters_create(void);
+extern DECLSPEC signal_parameters_t *C_SIGNAL_CALL
+signal_parameters_create(void);
 
 /**
  * \brief Frees signal parameters created with signal_parameters_create
  * \param p the parameters to free
  * \defgroup signal++
  */
-extern DECLSPEC void C_SIGNAL_CALL signal_parameters_free(signal_parameters_t* p);
+extern DECLSPEC void C_SIGNAL_CALL
+signal_parameters_free(signal_parameters_t *p);
 
 /**
  * \brief Send a signal to all registered handlers
@@ -84,7 +87,10 @@ extern DECLSPEC void C_SIGNAL_CALL signal_parameters_free(signal_parameters_t* p
  * \return true on success, false if either id or m is NULL
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_send(signal_manager_t* m, const char* id, const signal_parameters_t* param, signal_parameters_t* out);
+extern DECLSPEC bool C_SIGNAL_CALL signal_send(signal_manager_t *m,
+					       const char *id,
+					       const signal_parameters_t *param,
+					       signal_parameters_t *out);
 
 /**
  * \brief Register a new signal for this signal manager
@@ -94,7 +100,9 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_send(signal_manager_t* m, const char* 
  * \return true on success, false if m, id or fun is NULL or if the function is already registered
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_add(signal_manager_t* m, const char* id, signal_function_t fun);
+extern DECLSPEC bool C_SIGNAL_CALL signal_add(signal_manager_t *m,
+					      const char *id,
+					      signal_function_t fun);
 
 /**
  * \brief Add an integer variable to the parameter list
@@ -104,7 +112,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_add(signal_manager_t* m, const char* i
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_int(signal_parameters_t* p, const char* id, int val);
+extern DECLSPEC bool C_SIGNAL_CALL
+signal_parameters_set_int(signal_parameters_t *p, const char *id, int val);
 
 /**
  * \brief Add an unsigned integer variable to the parameter list
@@ -114,7 +123,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_int(signal_parameters_t
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_uint(signal_parameters_t* p, const char* id, unsigned int val);
+extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_uint(
+	signal_parameters_t *p, const char *id, unsigned int val);
 
 /**
  * \brief Add a boolean variable to the parameter list
@@ -124,7 +134,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_uint(signal_parameters_
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_bool(signal_parameters_t* p, const char* id, bool val);
+extern DECLSPEC bool C_SIGNAL_CALL
+signal_parameters_set_bool(signal_parameters_t *p, const char *id, bool val);
 
 /**
  * \brief Add a float variable to the parameter list
@@ -134,7 +145,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_bool(signal_parameters_
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_float(signal_parameters_t* p, const char* id, float val);
+extern DECLSPEC bool C_SIGNAL_CALL
+signal_parameters_set_float(signal_parameters_t *p, const char *id, float val);
 
 /**
  * \brief Add a double variable to the parameter list
@@ -144,7 +156,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_float(signal_parameters
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_double(signal_parameters_t* p, const char* id, double val);
+extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_double(
+	signal_parameters_t *p, const char *id, double val);
 
 /**
  * \brief Add a string variable to the parameter list
@@ -154,7 +167,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_double(signal_parameter
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_string(signal_parameters_t* p, const char* id, const char* val);
+extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_string(
+	signal_parameters_t *p, const char *id, const char *val);
 
 /**
  * \brief Add any data to the parameter list
@@ -165,7 +179,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_string(signal_parameter
  * \return true on success, false if p or id is NULL or if the variable already exists
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_data(signal_parameters_t* p, const char* id, void* val, size_t size);
+extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_data(
+	signal_parameters_t *p, const char *id, void *val, size_t size);
 
 /**
  * \brief Get an integer variable from the parameter list
@@ -175,7 +190,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_data(signal_parameters_
  * \return the value of the variable
  * \defgroup signal++
  */
-extern DECLSPEC int C_SIGNAL_CALL signal_parameters_get_int(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC int C_SIGNAL_CALL signal_parameters_get_int(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get an unsigned integer variable from the parameter list
@@ -185,7 +201,8 @@ extern DECLSPEC int C_SIGNAL_CALL signal_parameters_get_int(const signal_paramet
  * \return the value of the variable
  * \defgroup signal++
  */
-extern DECLSPEC unsigned int C_SIGNAL_CALL signal_parameters_get_uint(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC unsigned int C_SIGNAL_CALL signal_parameters_get_uint(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a boolean variable from the parameter list
@@ -195,7 +212,8 @@ extern DECLSPEC unsigned int C_SIGNAL_CALL signal_parameters_get_uint(const sign
  * \return the value of the variable
  * \defgroup signal++
  */
-extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_get_bool(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_get_bool(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a float variable from the parameter list
@@ -205,7 +223,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_get_bool(const signal_param
  * \return the value of the variable
  * \defgroup signal++
  */
-extern DECLSPEC float C_SIGNAL_CALL signal_parameters_get_float(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC float C_SIGNAL_CALL signal_parameters_get_float(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a double variable from the parameter list
@@ -215,7 +234,8 @@ extern DECLSPEC float C_SIGNAL_CALL signal_parameters_get_float(const signal_par
  * \return the value of the variable
  * \defgroup signal++
  */
-extern DECLSPEC double C_SIGNAL_CALL signal_parameters_get_double(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC double C_SIGNAL_CALL signal_parameters_get_double(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a string variable from the parameter list
@@ -225,7 +245,8 @@ extern DECLSPEC double C_SIGNAL_CALL signal_parameters_get_double(const signal_p
  * \return the value of the variable
  * \defgroup signal++
  */
-extern DECLSPEC const char* C_SIGNAL_CALL signal_parameters_get_string(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC const char *C_SIGNAL_CALL signal_parameters_get_string(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get any data variable from the parameter list
@@ -235,6 +256,7 @@ extern DECLSPEC const char* C_SIGNAL_CALL signal_parameters_get_string(const sig
  * \return the value of the variable, this is a direct pointer and should be copied if needed
  * \defgroup signal++
  */
-extern DECLSPEC const void* C_SIGNAL_CALL signal_parameters_get_data(const signal_parameters_t* p, const char* id, bool* ok);
+extern DECLSPEC const void *C_SIGNAL_CALL signal_parameters_get_data(
+	const signal_parameters_t *p, const char *id, bool *ok);
 
 #endif
