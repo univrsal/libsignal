@@ -70,11 +70,11 @@ class parameters {
     /**
      * \brief Add a data pointer to the list
      * \param id the id of the parameter
-	 * \param data the data to add
-	 * \param s the size of the pointer
-	 * \return true if the variable could be added, false if it already exists
-	 * \defgroup signal++
-	 */
+     * \param data the data to add
+     * \param s the size of the pointer
+     * \return true if the variable could be added, false if it already exists
+     * \defgroup signal++
+     */
     bool add_direct(const std::string &id, const void *data, size_t s)
     {
         auto tmp = m_parameters.find(id);
@@ -89,13 +89,13 @@ class parameters {
     }
 
     /**
-	 * \brief Get a variable from the list
-	 * \param id the id of the parameter
-	 * \param ok will be set to true on success (optional)
-	 * \param def the default return value on failure (optional)
-	 * \return the value of the parameter
-	 * \defgroup signal++
-	 */
+     * \brief Get a variable from the list
+     * \param id the id of the parameter
+     * \param ok will be set to true on success (optional)
+     * \param def the default return value on failure (optional)
+     * \return the value of the parameter
+     * \defgroup signal++
+     */
     template<class T>
     const T &get(const std::string &id, bool *ok = nullptr,
                  const T &def = T()) const
@@ -117,13 +117,13 @@ class parameters {
     }
 
     /**
-	 * \brief Get a data pointer from the list
-	 * \param id the id of the parameter
-	 * \param ok will be set to true on success (optional)
-	 * \param def the default return value on failure (optional)
-	 * \return the value of the parameter, this is a direct pointer and should be copied
-	 * \defgroup signal++
-	 */
+     * \brief Get a data pointer from the list
+     * \param id the id of the parameter
+     * \param ok will be set to true on success (optional)
+     * \param def the default return value on failure (optional)
+     * \return the value of the parameter, this is a direct pointer and should be copied
+     * \defgroup signal++
+     */
     void *get_direct(const std::string &id, bool *ok = nullptr,
                      void *def = nullptr) const
     {
@@ -155,8 +155,8 @@ class receiver {
 /**
  * \typedef Function pointer
  * \brief Structure for any method called by a signal
- * \param params	Parameters sent to this method by the signal caller
- * \param repsonse	Output data for this signal (shared by all methods)
+ * \param params    Parameters sent to this method by the signal caller
+ * \param repsonse    Output data for this signal (shared by all methods)
  * \defgroup signal++
  */
 typedef void (*signal_function)(const parameters &param, parameters *response);
@@ -176,36 +176,36 @@ class signal {
     ~signal() = default;
 
     /**
-	 * \brief Adds f as the first receiver
-	 * \param f the first receiver for this signal
-	 * \defgroup signal++
-	 */
+     * \brief Adds f as the first receiver
+     * \param f the first receiver for this signal
+     * \defgroup signal++
+     */
     signal(signal_function f) { m_receivers.emplace_back(f); }
 
     /**
-	 * \brief Adds r as the first receiver object
-	 * \param r the first receiver object for this signal
-	 * \defgroup signal++
-	 */
+     * \brief Adds r as the first receiver object
+     * \param r the first receiver object for this signal
+     * \defgroup signal++
+     */
     signal(receiver *r)
     {
         m_receiver_objects.emplace_back(std::shared_ptr<receiver>(r));
     }
 
     /**
-	 * \brief Adds r as the first receiver object using a shared pointer
-	 * to ensure that the object exists as long as this signal does
-	 * \param r the first receiver object for this signal
-	 * \defgroup signal++
-	 */
+     * \brief Adds r as the first receiver object using a shared pointer
+     * to ensure that the object exists as long as this signal does
+     * \param r the first receiver object for this signal
+     * \defgroup signal++
+     */
     signal(std::shared_ptr<receiver> &r) { m_receiver_objects.emplace_back(r); }
 
     /**
-	 * \brief Invoke this signal
-	 * \param param the paramters to send to the receivers (optional)
-	 * \param response the response used by the receivers (shared by all receivers) (optional)
-	 * \defgroup signal++
-	 */
+     * \brief Invoke this signal
+     * \param param the paramters to send to the receivers (optional)
+     * \param response the response used by the receivers (shared by all receivers) (optional)
+     * \defgroup signal++
+     */
     void invoke(const parameters &param = parameters(),
                 parameters *response = nullptr) const
     {
@@ -216,11 +216,11 @@ class signal {
     }
 
     /**
-	 * \brief Add a receiver for this signal
-	 * \param f the receiver function
-	 * \return true if the function could be added, false if it is already registered
-	 * \defgroup signal++
-	 */
+     * \brief Add a receiver for this signal
+     * \param f the receiver function
+     * \return true if the function could be added, false if it is already registered
+     * \defgroup signal++
+     */
     bool add_receiver(signal_function f)
     {
         if (!f)
@@ -234,12 +234,12 @@ class signal {
     }
 
     /**
-	 * \brief Add a receiver object for this signal using a shared pointer
-	 * to ensure that the object exists for as long as this signal does
-	 * \param r the receiver object
-	 * \return true if the receiver object could be added, false if it is already registered
-	 * \defgroup signal++
-	 */
+     * \brief Add a receiver object for this signal using a shared pointer
+     * to ensure that the object exists for as long as this signal does
+     * \param r the receiver object
+     * \return true if the receiver object could be added, false if it is already registered
+     * \defgroup signal++
+     */
     bool add_receiver_obj(std::shared_ptr<receiver> &&r)
     {
         if (!r)
@@ -253,11 +253,11 @@ class signal {
     }
 
     /**
-	 * \brief Add a receiver object for this signal
-	 * \param r the receiver object
-	 * \return true if the receiver object could be added, false if it is already registered
-	 * \defgroup signal++
-	 */
+     * \brief Add a receiver object for this signal
+     * \param r the receiver object
+     * \return true if the receiver object could be added, false if it is already registered
+     * \defgroup signal++
+     */
     bool add_receiver_obj(receiver *r)
     {
         return add_receiver_obj(std::shared_ptr<receiver>(r));
@@ -277,12 +277,12 @@ class manager {
     ~manager() = default;
 
     /**
-	 * \brief Send a signal to all receivers
-	 * \param id the id of the signal to invoke
-	 * \param param the parameters to send to the receivers
-	 * \param response the response parameters used by the receivers (shared by all receivers)
-	 * \return true if the signal could be found, otherwise false
-	 */
+     * \brief Send a signal to all receivers
+     * \param id the id of the signal to invoke
+     * \param param the parameters to send to the receivers
+     * \param response the response parameters used by the receivers (shared by all receivers)
+     * \return true if the signal could be found, otherwise false
+     */
     bool send(const std::string &id, const parameters &param = parameters(),
               parameters *response = nullptr) const
     {
@@ -294,11 +294,11 @@ class manager {
     }
 
     /**
-	 * \brief Add a signal to the manager
-	 * \param id the id of the signal to register
-	 * \param fun the first receiver function for this signal (optional)
-	 * \return true if the signal could be added, false if the id already exists
-	 */
+     * \brief Add a signal to the manager
+     * \param id the id of the signal to register
+     * \param fun the first receiver function for this signal (optional)
+     * \return true if the signal could be added, false if the id already exists
+     */
     bool add(const std::string &id, signal_function fun = nullptr)
     {
         auto sig = m_signals.find(id);
@@ -312,11 +312,11 @@ class manager {
     }
 
     /**
-	 * \brief Add a signal to the manager
-	 * \param id the id of the signal to register
-	 * \param r the first receiver object for this signal (optional)
-	 * \return true if the signal could be added, false if the id already exists
-	 */
+     * \brief Add a signal to the manager
+     * \param id the id of the signal to register
+     * \param r the first receiver object for this signal (optional)
+     * \return true if the signal could be added, false if the id already exists
+     */
     bool add(const std::string &id, receiver *r = nullptr)
     {
         auto sig = m_signals.find(id);
