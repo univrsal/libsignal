@@ -49,13 +49,13 @@ class parameters {
     }
 
     /**
-	 * \brief Add any variable to the list
-	 * \param T the variable type
-	 * \param id the id of the parameter
-	 * \param param the value of the variable
-	 * \return true if the variable could be added, false if it already exists
-	 * \defgroup signal++
-	 */
+     * \brief Add any variable to the list
+     * \param T the variable type
+     * \param id the id of the parameter
+     * \param param the value of the variable
+     * \return true if the variable could be added, false if it already exists
+     * \defgroup signal++
+     */
     template<class T> bool add(const std::string &id, const T &param)
     {
         auto tmp = m_parameters.find(id);
@@ -68,8 +68,8 @@ class parameters {
     }
 
     /**
-	 * \brief Add a data pointer to the list
-	 * \param id the id of the parameter
+     * \brief Add a data pointer to the list
+     * \param id the id of the parameter
 	 * \param data the data to add
 	 * \param s the size of the pointer
 	 * \return true if the variable could be added, false if it already exists
