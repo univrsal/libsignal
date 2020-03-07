@@ -22,7 +22,7 @@
 #include <csignal.h>
 #include <cstdio>
 #include <iostream>
-#include <signal.hpp>
+#include <libsignal.h>
 
 #define FLOAT_LENIENCY 0.00001
 

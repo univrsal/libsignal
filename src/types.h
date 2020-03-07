@@ -18,8 +18,8 @@
  */
 
 #pragma once
-#include <cstddef>
-#include <cstdint>
+#include <stddef.h>
+#include <stdbool.h>
 
 #ifdef _WIN32
 #define DECLSPEC __declspec(dllexport)

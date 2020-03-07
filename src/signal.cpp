@@ -17,8 +17,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-#include "signal.hpp"
-#include "csignal.h"
+#include "libsignal.h"
 #include <string.h>
 
 typedef struct signal_manager_s {
@@ -187,7 +186,7 @@ const char *signal_parameters_get_string(const signal_parameters_t *p,
             *ok = false;
         return nullptr;
     }
-    *ok = true;
+
     auto *str = p->param.get_direct(id, ok);
     if (str)
         return reinterpret_cast<std::string *>(str)->c_str();
