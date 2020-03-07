@@ -147,7 +147,7 @@ class parameters {
  */
 class receiver {
     public:
-    virtual ~receiver() = 0;
+    virtual ~receiver() = default;
     virtual void receive(const parameters &param = parameters(),
                          parameters *out = nullptr) = 0;
 };
@@ -170,10 +170,8 @@ typedef void (*signal_function)(const parameters &param, parameters *response);
 class signal {
     std::vector<signal_function> m_receivers;
     std::vector<std::shared_ptr<receiver>> m_receiver_objects;
-
     public:
     signal() = default;
-    ~signal() = default;
 
     /**
      * \brief Adds f as the first receiver
@@ -189,7 +187,8 @@ class signal {
      */
     signal(receiver *r)
     {
-        m_receiver_objects.emplace_back(std::shared_ptr<receiver>(r));
+        if (r)
+            m_receiver_objects.emplace_back(std::shared_ptr<receiver>(r));
     }
 
     /**
@@ -198,7 +197,7 @@ class signal {
      * \param r the first receiver object for this signal
      * \defgroup signal++
      */
-    signal(std::shared_ptr<receiver> &r) { m_receiver_objects.emplace_back(r); }
+    signal(std::shared_ptr<receiver> &&r) { m_receiver_objects.emplace_back(r); }
 
     /**
      * \brief Invoke this signal
@@ -260,7 +259,9 @@ class signal {
      */
     bool add_receiver_obj(receiver *r)
     {
-        return add_receiver_obj(std::shared_ptr<receiver>(r));
+        if (r)
+            return add_receiver_obj(std::shared_ptr<receiver>(r));
+        return false;
     }
 };
 
@@ -282,6 +283,7 @@ class manager {
      * \param param the parameters to send to the receivers
      * \param response the response parameters used by the receivers (shared by all receivers)
      * \return true if the signal could be found, otherwise false
+     * \defgroup signal++
      */
     bool send(const std::string &id, const parameters &param = parameters(),
               parameters *response = nullptr) const
@@ -298,6 +300,7 @@ class manager {
      * \param id the id of the signal to register
      * \param fun the first receiver function for this signal (optional)
      * \return true if the signal could be added, false if the id already exists
+     * \defgroup signal++
      */
     bool add(const std::string &id, signal_function fun = nullptr)
     {
@@ -309,6 +312,24 @@ class manager {
         if (fun)
             return sig->second.add_receiver(fun);
         return false;
+    }
+
+    /**
+     * \brief Add an object signal to the manager using a shared pointer
+     * to make sure that the object exists as long as the signal
+     * \param id the id of the signal to register
+     * \param r the receiver object for this signal
+     * \return true if the signal could be added, false if the id already exists
+     * \defgroup signal++
+     */
+    bool add(const std::string &id, std::shared_ptr<receiver>&& r)
+    {
+        auto sig = m_signals.find(id);
+        if (sig == m_signals.end()) {
+            m_signals[id] = signal(std::move(r));
+            return true;
+        }
+        return sig->second.add_receiver_obj(std::move(r));
     }
 
     /**
@@ -324,9 +345,7 @@ class manager {
             m_signals[id] = signal(r);
             return true;
         }
-        if (r)
-            return sig->second.add_receiver_obj(r);
-        return false;
+        return sig->second.add_receiver_obj(r);
     }
 };
 };
