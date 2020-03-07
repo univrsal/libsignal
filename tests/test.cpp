@@ -32,7 +32,7 @@ typedef struct point_s {
     int x, y;
 } point_t;
 
-template<class T>
+template <class T>
 void test_param(const signal::parameters &in, const char *id, const T &def,
                 const T &expect, bool expect2)
 {
@@ -45,7 +45,7 @@ void test_param(const signal::parameters &in, const char *id, const T &def,
     assert(ok == expect2);
 }
 
-template<class T>
+template <class T>
 void test_paramf(const signal::parameters &in, const char *id, const T &def,
                  const T &expect, bool expect2)
 {
@@ -58,34 +58,35 @@ void test_paramf(const signal::parameters &in, const char *id, const T &def,
 
 class receiver_a : public signal::receiver
 {
-public:
+  public:
     receiver_a() = default;
-    void receive(const signal::parameters &in= signal::parameters(), signal::parameters * = nullptr)
+    void receive(const signal::parameters &in = signal::parameters(),
+                 signal::parameters * = nullptr)
     {
         cout << "== Triggered C++ Object signal 1" << endl;
 
-		test_param<int>(in, "int", 0, -255, true);
-		test_param<int>(in, "int2", -1, -1, false);
-		test_param<unsigned int>(in, "uint", 0, 255, true);
-		test_param<unsigned int>(in, "uint2", 1, 1, false);
-		test_paramf<float>(in, "float", 0, 3.14f, true);
-		test_paramf<float>(in, "float2", -3.14f, 3.14f, false);
-		test_paramf<double>(in, "double", 0, 3.141, true);
-		test_paramf<double>(in, "double2", -3.14, 3.141, false);
-		test_param<bool>(in, "bool", false, true, true);
-		test_param<bool>(in, "bool2", false, false, false);
-		test_param<string>(in, "string", string(""), string("test123"), true);
-		test_param<string>(in, "string2", string("doesn't exist"),
-		                   string("doesn't exist"), false);
-
-	}
+        test_param<int>(in, "int", 0, -255, true);
+        test_param<int>(in, "int2", -1, -1, false);
+        test_param<unsigned int>(in, "uint", 0, 255, true);
+        test_param<unsigned int>(in, "uint2", 1, 1, false);
+        test_paramf<float>(in, "float", 0, 3.14f, true);
+        test_paramf<float>(in, "float2", -3.14f, 3.14f, false);
+        test_paramf<double>(in, "double", 0, 3.141, true);
+        test_paramf<double>(in, "double2", -3.14, 3.141, false);
+        test_param<bool>(in, "bool", false, true, true);
+        test_param<bool>(in, "bool2", false, false, false);
+        test_param<string>(in, "string", string(""), string("test123"), true);
+        test_param<string>(in, "string2", string("doesn't exist"),
+                           string("doesn't exist"), false);
+    }
 };
 
 class receiver_b : public signal::receiver
 {
-public:
+  public:
     receiver_b() = default;
-    void receive(const signal::parameters & = signal::parameters(), signal::parameters *out = nullptr)
+    void receive(const signal::parameters & = signal::parameters(),
+                 signal::parameters *out = nullptr)
     {
         cout << "== Triggered C++ Object signal 2" << endl;
         if (out) {
@@ -96,7 +97,6 @@ public:
             assert(out->add<bool>("bool", true));
             assert(out->add<string>("string", string("test123")));
         }
-
     }
 };
 
@@ -143,8 +143,8 @@ void register_cpp_signals(signal::manager &man)
     assert(man.add("signal1", cpp_signal1_2));
     assert(man.add("signal2", cpp_signal2));
 
-	assert(man.add("signal1", std::make_shared<receiver_a>()));
-	assert(man.add("signal2", std::make_shared<receiver_b>()));
+    assert(man.add("signal1", std::make_shared<receiver_a>()));
+    assert(man.add("signal2", std::make_shared<receiver_b>()));
 }
 
 void c_signal1(const signal_parameters_t *in, signal_parameters_t *)
@@ -186,7 +186,7 @@ void c_signal1(const signal_parameters_t *in, signal_parameters_t *)
     assert(!ok);
 
     const point_t *val7 = reinterpret_cast<const point_t *>(
-            signal_parameters_get_data(in, "data", &ok));
+        signal_parameters_get_data(in, "data", &ok));
     assert(val7->x == 2 && val7->y == 3 && ok);
 
     signal_parameters_get_data(in, "data2", &ok);
@@ -221,7 +221,6 @@ void register_c_signals(signal_manager_t *man)
     assert(signal_add(man, "signal1", c_signal1));
     assert(signal_add(man, "signal1_2", c_signal1_2));
     assert(signal_add(man, "signal2", c_signal2));
-
 }
 
 int signal_cpp_test()
@@ -294,7 +293,7 @@ int signal_c_test()
     const char *val6 = signal_parameters_get_string(in, "string", &ok);
     assert(strcmp(val6, "string123") == 0 && ok);
     const point_t *val7 = reinterpret_cast<const point_t *>(
-            signal_parameters_get_data(in, "data", &ok));
+        signal_parameters_get_data(in, "data", &ok));
     assert(val7->x == 2 && val7->y == 3 && ok);
 
     printf("--- Freeing memory\n");

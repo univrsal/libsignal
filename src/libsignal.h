@@ -30,16 +30,18 @@
 #include <utility>
 #include <vector>
 
-namespace signal {
+namespace signal
+{
 
 /**
- * \brief The parameters class, contains a list of parameters used for calling signals
- * \class parameters
+ * \brief The parameters class, contains a list of parameters used for calling
+ * signals \class parameters
  */
-class parameters {
+class parameters
+{
     std::map<std::string, std::pair<size_t, void *>> m_parameters;
 
-    public:
+  public:
     parameters() = default;
 
     ~parameters()
@@ -59,7 +61,7 @@ class parameters {
      * \return true if the variable could be added, false if it already exists
      * \defgroup signal++
      */
-    template<class T> bool add(const std::string &id, const T &param)
+    template <class T> bool add(const std::string &id, const T &param)
     {
         auto tmp = m_parameters.find(id);
         if (tmp == m_parameters.end()) {
@@ -99,23 +101,20 @@ class parameters {
      * \return the value of the parameter
      * \defgroup signal++
      */
-    template<class T>
+    template <class T>
     const T &get(const std::string &id, bool *ok = nullptr,
                  const T &def = T()) const
     {
         auto p = m_parameters.find(id);
         if (p == m_parameters.end()) {
-            if (ok)
-                *ok = false;
+            if (ok) *ok = false;
             return def;
         }
         if (sizeof(T) != p->second.first) {
-            if (ok)
-                *ok = false;
+            if (ok) *ok = false;
             return def;
         }
-        if (ok)
-            *ok = true;
+        if (ok) *ok = true;
         return *reinterpret_cast<T *>(p->second.second);
     }
 
@@ -124,20 +123,18 @@ class parameters {
      * \param id the id of the parameter
      * \param ok will be set to true on success (optional)
      * \param def the default return value on failure (optional)
-     * \return the value of the parameter, this is a direct pointer and should be copied
-     * \defgroup signal++
+     * \return the value of the parameter, this is a direct pointer and should
+     * be copied \defgroup signal++
      */
     void *get_direct(const std::string &id, bool *ok = nullptr,
                      void *def = nullptr) const
     {
         auto p = m_parameters.find(id);
         if (p == m_parameters.end()) {
-            if (ok)
-                *ok = false;
+            if (ok) *ok = false;
             return def;
         }
-        if (ok)
-            *ok = true;
+        if (ok) *ok = true;
         return p->second.second;
     }
 };
@@ -148,8 +145,9 @@ class parameters {
  * \class receiver
  * \defgroup signal++
  */
-class receiver {
-    public:
+class receiver
+{
+  public:
     virtual ~receiver() = default;
     virtual void receive(const parameters &param = parameters(),
                          parameters *out = nullptr) = 0;
@@ -170,10 +168,12 @@ typedef void (*signal_function)(const parameters &param, parameters *response);
  * \class signal
  * \defgroup signal++
  */
-class signal {
+class signal
+{
     std::vector<signal_function> m_receivers;
     std::vector<std::shared_ptr<receiver>> m_receiver_objects;
-    public:
+
+  public:
     signal() = default;
 
     /**
@@ -190,8 +190,7 @@ class signal {
      */
     signal(receiver *r)
     {
-        if (r)
-            m_receiver_objects.emplace_back(std::shared_ptr<receiver>(r));
+        if (r) m_receiver_objects.emplace_back(std::shared_ptr<receiver>(r));
     }
 
     /**
@@ -200,13 +199,16 @@ class signal {
      * \param r the first receiver object for this signal
      * \defgroup signal++
      */
-    signal(std::shared_ptr<receiver> &&r) { m_receiver_objects.emplace_back(r); }
+    signal(std::shared_ptr<receiver> &&r)
+    {
+        m_receiver_objects.emplace_back(r);
+    }
 
     /**
      * \brief Invoke this signal
      * \param param the paramters to send to the receivers (optional)
-     * \param response the response used by the receivers (shared by all receivers) (optional)
-     * \defgroup signal++
+     * \param response the response used by the receivers (shared by all
+     * receivers) (optional) \defgroup signal++
      */
     void invoke(const parameters &param = parameters(),
                 parameters *response = nullptr) const
@@ -220,13 +222,12 @@ class signal {
     /**
      * \brief Add a receiver for this signal
      * \param f the receiver function
-     * \return true if the function could be added, false if it is already registered
-     * \defgroup signal++
+     * \return true if the function could be added, false if it is already
+     * registered \defgroup signal++
      */
     bool add_receiver(signal_function f)
     {
-        if (!f)
-            return false;
+        if (!f) return false;
         if (std::find(m_receivers.begin(), m_receivers.end(), f) ==
             m_receivers.end()) {
             m_receivers.emplace_back(f);
@@ -239,13 +240,12 @@ class signal {
      * \brief Add a receiver object for this signal using a shared pointer
      * to ensure that the object exists for as long as this signal does
      * \param r the receiver object
-     * \return true if the receiver object could be added, false if it is already registered
-     * \defgroup signal++
+     * \return true if the receiver object could be added, false if it is
+     * already registered \defgroup signal++
      */
     bool add_receiver_obj(std::shared_ptr<receiver> &&r)
     {
-        if (!r)
-            return false;
+        if (!r) return false;
         if (std::find(m_receiver_objects.begin(), m_receiver_objects.end(),
                       r) == m_receiver_objects.end()) {
             m_receiver_objects.emplace_back(r);
@@ -260,10 +260,11 @@ class signal {
  * \class manager
  * \defgroup signal++
  */
-class manager {
+class manager
+{
     std::map<std::string, signal> m_signals;
 
-    public:
+  public:
     manager() = default;
     ~manager() = default;
 
@@ -271,16 +272,15 @@ class manager {
      * \brief Send a signal to all receivers
      * \param id the id of the signal to invoke
      * \param param the parameters to send to the receivers
-     * \param response the response parameters used by the receivers (shared by all receivers)
-     * \return true if the signal could be found, otherwise false
+     * \param response the response parameters used by the receivers (shared by
+     * all receivers) \return true if the signal could be found, otherwise false
      * \defgroup signal++
      */
     bool send(const std::string &id, const parameters &param = parameters(),
               parameters *response = nullptr) const
     {
         auto sig = m_signals.find(id);
-        if (sig == m_signals.end())
-            return false;
+        if (sig == m_signals.end()) return false;
         sig->second.invoke(param, response);
         return true;
     }
@@ -299,8 +299,7 @@ class manager {
             m_signals[id] = signal(fun);
             return true;
         }
-        if (fun)
-            return sig->second.add_receiver(fun);
+        if (fun) return sig->second.add_receiver(fun);
         return false;
     }
 
@@ -312,7 +311,7 @@ class manager {
      * \return true if the signal could be added, false if the id already exists
      * \defgroup signal++
      */
-    bool add(const std::string &id, std::shared_ptr<receiver>&& r)
+    bool add(const std::string &id, std::shared_ptr<receiver> &&r)
     {
         auto sig = m_signals.find(id);
         if (sig == m_signals.end()) {
@@ -322,7 +321,7 @@ class manager {
         return sig->second.add_receiver_obj(std::move(r));
     }
 };
-};
+}; // namespace signal
 
 #endif /* C++ implementation */
 
@@ -336,15 +335,15 @@ extern "C" {
 
 /**
  * \struct signal_manager_t csignal.h
- * \brief Opaque structure which holds C++ implementation of the signal handler
- * \defgroup signal++
+ * \brief Opaque structure which holds C++ implementation of the signal
+ * handler \defgroup signal++
  */
 typedef struct signal_manager_s signal_manager_t;
 
 /**
  * \struct signal_paramters_t csignal.h
- * \brief Opaque structure which holds C++ implementation of signal parameters
- * \defgroup signal++
+ * \brief Opaque structure which holds C++ implementation of signal
+ * parameters \defgroup signal++
  */
 typedef struct signal_parameters_s signal_parameters_t;
 
@@ -407,8 +406,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_send(signal_manager_t *m,
  * \param m the signal manager to use
  * \param id the id of the signal to register
  * \param fun the signal handler function
- * \return true on success, false if m, id or fun is NULL or if the function is already registered
- * \defgroup signal++
+ * \return true on success, false if m, id or fun is NULL or if the function
+ * is already registered \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL signal_add(signal_manager_t *m,
                                               const char *id,
@@ -419,8 +418,8 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_add(signal_manager_t *m,
  * \param p the parameter list to use
  * \param id the id of the parameter
  * \param val the value of the parameter
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL
 signal_parameters_set_int(signal_parameters_t *p, const char *id, int val);
@@ -430,19 +429,19 @@ signal_parameters_set_int(signal_parameters_t *p, const char *id, int val);
  * \param p the parameter list to use
  * \param id the of the parameter
  * \param val the value of the parameter
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_uint(
-        signal_parameters_t *p, const char *id, unsigned int val);
+    signal_parameters_t *p, const char *id, unsigned int val);
 
 /**
  * \brief Add a boolean variable to the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
  * \param val the value of the parameter
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL
 signal_parameters_set_bool(signal_parameters_t *p, const char *id, bool val);
@@ -452,8 +451,8 @@ signal_parameters_set_bool(signal_parameters_t *p, const char *id, bool val);
  * \param p the parameter list to use
  * \param id the id of the parameter
  * \param val the value of the parameter
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL
 signal_parameters_set_float(signal_parameters_t *p, const char *id, float val);
@@ -463,22 +462,22 @@ signal_parameters_set_float(signal_parameters_t *p, const char *id, float val);
  * \param p the parameter list to use
  * \param id the id of the parameter
  * \param val the value of the parameter
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_double(
-        signal_parameters_t *p, const char *id, double val);
+    signal_parameters_t *p, const char *id, double val);
 
 /**
  * \brief Add a string variable to the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
  * \param val the value of the parameter
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_string(
-        signal_parameters_t *p, const char *id, const char *val);
+    signal_parameters_t *p, const char *id, const char *val);
 
 /**
  * \brief Add any data to the parameter list
@@ -486,88 +485,82 @@ extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_string(
  * \param id the id of the parameter
  * \param val the value of the parameter
  * \param size the size in bytes of the data pointer
- * \return true on success, false if p or id is NULL or if the variable already exists
- * \defgroup signal++
+ * \return true on success, false if p or id is NULL or if the variable
+ * already exists \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_set_data(
-        signal_parameters_t *p, const char *id, void *val, size_t size);
+    signal_parameters_t *p, const char *id, void *val, size_t size);
 
 /**
  * \brief Get an integer variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable \defgroup signal++
  */
 extern DECLSPEC int C_SIGNAL_CALL signal_parameters_get_int(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get an unsigned integer variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable \defgroup signal++
  */
 extern DECLSPEC unsigned int C_SIGNAL_CALL signal_parameters_get_uint(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a boolean variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable \defgroup signal++
  */
 extern DECLSPEC bool C_SIGNAL_CALL signal_parameters_get_bool(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a float variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable \defgroup signal++
  */
 extern DECLSPEC float C_SIGNAL_CALL signal_parameters_get_float(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a double variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable \defgroup signal++
  */
 extern DECLSPEC double C_SIGNAL_CALL signal_parameters_get_double(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get a string variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable \defgroup signal++
  */
 extern DECLSPEC const char *C_SIGNAL_CALL signal_parameters_get_string(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 /**
  * \brief Get any data variable from the parameter list
  * \param p the parameter list to use
  * \param id the id of the parameter
- * \param ok will be set to true if the variable could be retrieved, can be NULL
- * \return the value of the variable, this is a direct pointer and should be copied if needed
- * \defgroup signal++
+ * \param ok will be set to true if the variable could be retrieved, can be
+ * NULL \return the value of the variable, this is a direct pointer and
+ * should be copied if needed \defgroup signal++
  */
 extern DECLSPEC const void *C_SIGNAL_CALL signal_parameters_get_data(
-        const signal_parameters_t *p, const char *id, bool *ok);
+    const signal_parameters_t *p, const char *id, bool *ok);
 
 #ifdef __cplusplus
 }

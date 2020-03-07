@@ -20,5 +20,4 @@
 #ifndef C_SIGNAL_H
 #define C_SIGNAL_H
 
-
 #endif
