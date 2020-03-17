@@ -1,7 +1,7 @@
 # libsignal
 Small library to send signals in C/C++
 
-For C++ just include ``libsignal.h`` and ``types.h`` in your project, for C compile the plugin with CMake
+For C++ just include ``libsignal.h`` and ``types.h`` in your project, for C compile the library with CMake
 and then link against it.
 
 ## Compiling
